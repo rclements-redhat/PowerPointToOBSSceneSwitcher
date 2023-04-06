@@ -1,4 +1,4 @@
-﻿using OBS.WebSocket.NET;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace PowerPointToOBSSceneSwitcher
 	public class ObsLocal : IDisposable
 	{
 		private bool _DisposedValue;
-		private ObsWebSocket _OBS;
+		private OBSWebsocketDotNet.OBSWebsocket _OBS;
 		private List<string> validScenes;
 		private string defaultScene;
 
@@ -18,8 +18,8 @@ namespace PowerPointToOBSSceneSwitcher
 
 		public Task Connect()
 		{
-			_OBS = new ObsWebSocket();
-			_OBS.Connect($"ws://127.0.0.1:4444", "");
+			_OBS = new OBSWebsocketDotNet.OBSWebsocket();
+			_OBS.ConnectAsync($"ws://192.168.0.120:4455", "");
 			return Task.CompletedTask;
 		}
 
@@ -52,17 +52,17 @@ namespace PowerPointToOBSSceneSwitcher
 			
 				scene = defaultScene;
 			}
+			_OBS.SetCurrentProgramScene(scene);
 
-			_OBS.Api.SetCurrentScene(scene);
 
 			return true;
         }
 
 		public void GetScenes()
         {
-			var allScene = _OBS.Api.GetSceneList();
+			var allScene = _OBS.GetSceneList();
 			var list = allScene.Scenes.Select(s => s.Name).ToList();
-            Console.WriteLine("Valid Scenes:");
+			// Console.WriteLine("Valid Scenes:");
 			foreach(var l in list)
             {
                 Console.WriteLine(l);
@@ -72,14 +72,14 @@ namespace PowerPointToOBSSceneSwitcher
 
 		public bool StartRecording()
 		{
-			try { _OBS.Api.StartRecording(); }
+			try { _OBS.StartRecord(); }
 			catch {  /* Recording already started */ }
 			return true;
 		}
 
 		public bool StopRecording()
 		{
-			try { _OBS.Api.StopRecording(); }
+			try { _OBS.StopRecord(); }
 			catch {  /* Recording already stopped */ }
 			return true;
 		}

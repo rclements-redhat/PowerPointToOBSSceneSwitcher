@@ -21,7 +21,7 @@ namespace PowerPointToOBSSceneSwitcher
             await OBS.Connect();
             Console.WriteLine("connected");
 
-            OBS.GetScenes();
+            //OBS.GetScenes();
 
             Console.ReadLine();
         }
@@ -39,14 +39,15 @@ namespace PowerPointToOBSSceneSwitcher
 
                 bool sceneHandled = false;
 
+                OBS.GetScenes();
 
                 var notereader = new StringReader(note);
                 string line;
                 while ((line = notereader.ReadLine()) != null)
                 {
-                    if (line.StartsWith("OBS:"))
+                    if (line.StartsWith("OBSSCENE:"))
                     {
-                        line = line.Substring(4).Trim();
+                        line = line.Substring(9).Trim();
 
                         if (!sceneHandled)
                         {
@@ -81,12 +82,13 @@ namespace PowerPointToOBSSceneSwitcher
                     {
                         OBS.StopRecording();
                     }
-
+                    /*
                     if (!sceneHandled)
                     {
                         OBS.ChangeScene(OBS.DefaultScene);
                         Console.WriteLine($"  Switching to OBS Default Scene named \"{OBS.DefaultScene}\"");
                     }
+                    */
                 }
             }
         }
